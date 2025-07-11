@@ -1,0 +1,35 @@
+name: CI/CD to K8s
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  IMAGE_NAME: wintercodenkjj/wintercode-api
+
+jobs:
+  deploy:
+    name: Deply on cluster
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG_BASE64 }}" | base64 -d > ~/.kube/config
+          chmod 600 ~/.kube/config
+
+      - name: config secrets
+        run: |
+          echo "${{ secrets.K8S_SCRTS }}" > ./cluster/secrests.yaml 
+          kubectl apply -f ./cluster/secrests.yaml
+
+      - name: config ingress
+        run: |
+          kubectl apply -f ./cluster/inginx-deployment.yaml
+
+      - name: config dashboard
+        run: |
+          kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+          kubectl apply -f ./dashboard
