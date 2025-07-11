@@ -8,7 +8,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: demo.yourdomain.com
+  - host: welcome.wintercodedesign.com
     http:
       paths:
       - path: /
