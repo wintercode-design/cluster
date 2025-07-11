@@ -22,7 +22,7 @@ jobs:
 
       - name: config secrets
         run: |
-          echo "${{ secrets.K8S_SCRTS }}" > ./cluster/secrests.yaml 
+          echo "${{ secrets.K8S_SCRTS }}" | base64 -d > ./cluster/secrests.yaml 
           kubectl apply -f ./cluster/secrests.yaml
 
       - name: config ingress
